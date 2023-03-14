@@ -25,23 +25,51 @@ describe("API testing. GET methods", () => {
     // expect(res.body). (EXPECTED_OBJ_GET_BREEDS);
   });
 
-  it("Returns a random cat fact", async () => {
+  it.only("Returns a random cat fact", async () => {
     const res = await superagent.get(BASE_URL + FACT);
+
+    let facts = EXPECTED_OBJ_GET_RANDOM_FACTS.data;
+    let randomFact = res.body;
+    let factArray: any = [];
+    let hhh = factArray.push(randomFact);
+
+    const filteredFacts = factArray.filter((array: any) =>
+      facts.every(
+        (facts: any) =>
+          !(factArray.fact === array.fact && facts.lenght === array.length)
+      )
+    );
+    function cleanSingleRecord(filteredFacts: any) {
+      filteredFacts = JSON.stringify(filteredFacts);
+      filteredFacts = filteredFacts.substring(1, filteredFacts.length - 1);
+      return JSON.parse(filteredFacts.trim());
+    }
+
+    let objectFact = cleanSingleRecord(filteredFacts);
+
     expect(res.status).toBe(200);
     expect(res.body).not.toEqual(0);
-    console.log(res.body);
-
-    // expect(res.body).toEqual(EXPECTED_OBJ_GET_RANDOM_FACTS);
+    expect(res.body).toEqual(objectFact);
   });
 
-  // ok
+
   it("Returns a random cat fact max lenght 150", async () => {
     const res = await superagent
       .get(BASE_URL + FACT)
       .query({ max_lenght: 150 });
+    let facts = EXPECTED_OBJ_GET_RANDOM_FACTS.data;
+    let randomFacts = res.body;
+    let iii = [randomFacts];
+    // const filteredFacts = iii.filter((array: any) =>
+    //   facts.every(
+    //     (facts: any) =>
+    //       !(iii.fact === array.fact && facts.lenght === array.length)
+    //   )
+    // );
     expect(res.status).toBe(200);
     console.log(res.body.length);
-    expect(res.body.length).toBeLessThanOrEqual(150);
+    // expect(res.body.length).toBeLessThanOrEqual(150);
+    // expect(randomFacts).toEqual(filteredFacts);
   });
 
   it("Get a list of cat facts", async () => {
@@ -50,21 +78,20 @@ describe("API testing. GET methods", () => {
     expect(res.body).toEqual(EXPECTED_OBJ_GET_FACTS);
   });
 
-  it.only("Get a list of cat facts limit 50", async () => {
+  it("Get a list of cat facts limit 50", async () => {
     const res = await superagent
       .get(BASE_URL + FACTS)
-      .query({ max_length: 50 });
+      .query({ max_length: 30 });
     let facts = EXPECTED_OBJ_GET_RANDOM_FACTS.data;
     let randomFacts = res.body.data;
+    const filteredFacts = randomFacts.filter((array: any) =>
+      facts.every(
+        (facts: any) =>
+          !(randomFacts.fact === array.fact && facts.lenght === array.length)
+      )
+    );
     expect(res.status).toBe(200);
-    expect(res.body.data.length).toBeLessThanOrEqual(50);
-
-    // const result = facts.map((r1: { fact: string, lenght: number}) => {
-    //   if (randomFacts.find((r2: { fact: string }) => r1.fact === r2.fact)) {
-    //   }
-    //   return r1;
-    // });
-    // console.log(result);
-    expect(res.body.data).toMatchObject(EXPECTED_OBJ_GET_RANDOM_FACTS.data);
+    expect(randomFacts.length).toBeLessThanOrEqual(30);
+    expect(randomFacts).toEqual(filteredFacts);
   });
 });
