@@ -21,6 +21,26 @@ describe("API testing. GET methods", () => {
 
   it("Returns a list of breeds limit 1", async () => {
     const res = await superagent.get(BASE_URL + BREEDS).query({ limit: 1 });
+
+    let breeds = EXPECTED_OBJ_GET_BREEDS.data;
+    let randomFact = res.body;
+    let factArray: any = [];
+    let hhh = factArray.push(randomFact);
+
+    const filteredFacts = factArray.filter((array: any) =>
+      breeds.every(
+        (breeds: any) =>
+          !(factArray.fact === array.fact && breeds.lenght === array.length)
+      )
+    );
+    function cleanSingleRecord(filteredFacts: any) {
+      filteredFacts = JSON.stringify(filteredFacts);
+      filteredFacts = filteredFacts.substring(1, filteredFacts.length - 1);
+      return JSON.parse(filteredFacts.trim());
+    }
+
+    let objectFact = cleanSingleRecord(filteredFacts);
+
     expect(res.status).toBe(200);
     // expect(res.body). (EXPECTED_OBJ_GET_BREEDS);
   });
@@ -30,13 +50,13 @@ describe("API testing. GET methods", () => {
 
     let facts = EXPECTED_OBJ_GET_RANDOM_FACTS.data;
     let randomFact = res.body;
-    let factArray: any = [];
-    let hhh = factArray.push(randomFact);
+    let array = [];
+    array.push(randomFact);
 
-    const filteredFacts = factArray.filter((array: any) =>
+    const filteredFacts = array.filter((array: any) =>
       facts.every(
         (facts: any) =>
-          !(factArray.fact === array.fact && facts.lenght === array.length)
+          !(array.fact === array.fact && facts.lenght === array.length)
       )
     );
     function cleanSingleRecord(filteredFacts: any) {
@@ -51,7 +71,6 @@ describe("API testing. GET methods", () => {
     expect(res.body).not.toEqual(0);
     expect(res.body).toEqual(objectFact);
   });
-
 
   it("Returns a random cat fact max lenght 150", async () => {
     const res = await superagent
