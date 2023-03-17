@@ -20,19 +20,19 @@ describe("API testing. GET methods", () => {
   it("Returns a list of breeds limit 1", async () => {
     const res = await superagent.get(BASE_URL + BREEDS).query({ limit: 3 });
     let breeds = EXPECTED_OBJ_GET_BREEDS.data;
-    let randomBreeds = res.body.data;
-    const filteredBreeds = randomBreeds.filter((array: any) =>
+    let limitBreeds = res.body.data;
+    const filteredBreeds = limitBreeds.filter((array: any) =>
       breeds.every(
         (breeds: any) =>
           !(
-            randomBreeds.breed === array.breed &&
+            limitBreeds.breed === array.breed &&
             breeds.country === array.country &&
             breeds.origin === array.origin
           )
       )
     );
     expect(res.status).toBe(200);
-    expect(randomBreeds).toEqual(filteredBreeds);
+    expect(limitBreeds).toEqual(filteredBreeds);
   });
 
   it("Returns a random cat fact", async () => {
